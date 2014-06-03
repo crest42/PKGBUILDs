@@ -7,6 +7,7 @@
 #  - disabled distcc - bad things happen
 #  - added -fno-strict-volatile-bitfields to CXXFLAGS to fix ARM bug
 #  - no libfbclient/ibase, issues building on ARM
+#  - Use egl/glesv2 as opengl backend
 
 pkgname=qt4
 pkgver=4.8.6
@@ -16,7 +17,7 @@ url='http://qt-project.org/'
 license=('GPL3' 'LGPL' 'FDL' 'custom')
 pkgdesc='A cross-platform application and UI framework'
 depends=('libtiff' 'libpng' 'sqlite' 'ca-certificates' 'dbus'
-        'fontconfig' 'libgl' 'libxrandr' 'libxv' 'libxi' 'alsa-lib'
+        'fontconfig' 'libegl' 'libgles' 'libxrandr' 'libxv' 'libxi' 'alsa-lib'
         'xdg-utils' 'hicolor-icon-theme' 'desktop-file-utils' 'libmng')
 makedepends=('postgresql-libs' 'mariadb' 'unixodbc' 'cups' 'gtk2'
              'mesa')
@@ -30,8 +31,9 @@ optdepends=('qtchooser: set the default Qt toolkit'
             'icu: Unicode support')
 install="${pkgname}.install"
 options=('!distcc')
-replaces=('qt<=4.8.4')
-conflicts=('qt')
+replaces=('qt<=4.8.4' 'qtwebkit')
+conflicts=('qt' 'qtwebkit')
+provides=('qtwebkit')
 options=('staticlibs') # libQtUiTools builds as static only
 _pkgfqn="qt-everywhere-opensource-src-${pkgver}"
 source=("http://download.qt-project.org/official_releases/qt/4.8/${pkgver}/${_pkgfqn}.tar.gz"
@@ -89,7 +91,6 @@ build() {
     -system-sqlite \
     -no-phonon \
     -no-phonon-backend \
-    -no-webkit \
     -graphicssystem raster \
     -openssl-linked \
     -nomake demos \
@@ -100,6 +101,8 @@ build() {
     -optimized-qmake \
     -reduce-relocations \
     -dbus-linked \
+    -egl \
+    -opengl es2 \
     -no-openvg \
     -no-mmx \
     -no-3dnow \
