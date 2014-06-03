@@ -3,16 +3,17 @@
 
 # ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
 #  - use --disable-jit to solve segfaults
+#  - Use egl/glesv2, and disable glx
 
 pkgbase=webkitgtk
 pkgname=(webkitgtk webkitgtk2)
 pkgver=2.4.2
-pkgrel=1
+pkgrel=1.1
 pkgdesc="GTK+ Web content engine library"
 arch=(i686 x86_64)
 url="http://webkitgtk.org/"
 license=(custom)
-depends=(libxt libxslt sqlite libsoup enchant libgl geoclue gst-plugins-base-libs
+depends=(libxt libxslt sqlite libsoup enchant libegl libgles geoclue gst-plugins-base-libs
          libsecret libwebp harfbuzz-icu)
 makedepends=(gtk3 gtk2 gperf gobject-introspection python mesa ruby gtk-doc)
 optdepends=('gst-plugins-base: free media decoding'
@@ -37,6 +38,7 @@ _build() (
   ../$pkgbase-$pkgver/configure --prefix=/usr \
     --libexecdir=/usr/lib/webkit${_ver} \
     --enable-introspection --disable-jit \
+    --enable-gles2 --enable-egl --disable-glx \
     "$@"
 
   # https://bugzilla.gnome.org/show_bug.cgi?id=655517
